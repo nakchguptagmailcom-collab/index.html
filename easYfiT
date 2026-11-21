@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#1769e8">
+<title>EASYFIT | Fitness Platform</title>
+<style>
+:root{--b:#1769e8;--p:#eaf2ff;--bg:#f4f7fc;--dark:#172640;--muted:#718096;--white:#fff;--line:#e5eaf2;--green:#149b68}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--dark);font-family:Arial,sans-serif}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+header{height:70px;background:white;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+.logo{font-size:25px;font-weight:900;color:var(--b)}
+.logo small{display:block;font-size:10px;letter-spacing:2px;color:var(--muted)}
+.wrap{max-width:1250px;margin:auto}
+.layout{display:grid;grid-template-columns:220px 1fr;min-height:90vh}
+aside{background:white;padding:20px 12px;border-right:1px solid var(--line)}
+nav button{display:block;width:100%;padding:13px;margin:4px 0;text-align:left;background:white;border:0;border-radius:10px;color:#52637b;font-weight:bold}
+nav button.active,nav button:hover{background:var(--p);color:var(--b)}
+main{padding:25px;min-width:0}
+.page{display:none}.page.active{display:block}
+h1{font-size:27px;margin:0 0 7px}
+h2{font-size:19px;margin:0 0 15px}
+.sub{color:var(--muted);margin:0 0 22px}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.card{background:white;padding:19px;border:1px solid var(--line);border-radius:16px;margin-bottom:16px;box-shadow:0 4px 15px #203b6409;min-width:0}
+.stat{font-size:27px;font-weight:800;margin:10px 0}
+.muted,.small{color:var(--muted)}.small{font-size:12px}
+.btn{background:var(--b);color:white;border:0;border-radius:9px;padding:11px 15px;font-weight:bold}
+.btn.secondary{background:var(--p);color:var(--b)}
+.btn.green{background:var(--green)}
+.btn.red{background:#fff0f0;color:#c44}
+.btn:active{transform:scale(.98)}
+.field{width:100%;padding:12px;border:1px solid #dce4ef;border-radius:9px;margin:7px 0 14px;background:white;color:var(--dark)}
+label{font-size:13px;font-weight:bold}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.item{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--line)}
+.item:last-child{border:0}
+.item input{width:19px;height:19px;accent-color:var(--b)}
+.item.done .name{text-decoration:line-through;color:#9ba6b5}
+.name{font-weight:600;font-size:14px;flex:1}
+.tag{background:var(--p);color:var(--b);padding:5px 9px;border-radius:20px;font-size:11px}
+.progress{height:9px;background:#e9edf4;border-radius:20px;margin:12px 0;overflow:hidden}
+.progress span{display:block;background:var(--b);height:100%;width:0}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.empty{text-align:center;padding:20px;color:var(--muted)}
+.chat{background:#f4f7fc;padding:15px;border-radius:12px;white-space:pre-wrap;line-height:1.6;min-height:90px;margin:12px 0}
+.bottom{display:none}
+footer{text-align:center;padding:25px;color:var(--muted);font-size:12px}
+@media(max-width:800px){
+ .layout{display:block}aside{display:none}
+ main{padding:18px 13px 90px}
+ .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+ .two{grid-template-columns:1fr}
+ .bottom{display:flex;position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid var(--line);justify-content:space-around;padding:8px 2px;z-index:10}
+ .bottom button{border:0;background:white;color:#64748b;font-size:10px;padding:5px;display:flex;flex-direction:column;align-items:center;gap:4px}
+ .bottom button.active{color:var(--b);font-weight:bold}
+ .bottom span{font-size:19px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+ <div class="logo">EASYFIT<small>YOUR FITNESS JOURNEY</small></div>
+ <button class="btn secondary" onclick="toggleLanguage()" id="langButton">हिन्दी</button>
+</header>
+
+<div class="layout">
+<aside>
+ <nav id="sideNav">
+ <button class="active" data-page="home" onclick="go('home')">🏠 Dashboard</button>
+ <button data-page="workout" onclick="go('workout')">💪 Workout</button>
+ <button data-page="diet" onclick="go('diet')">🥗 Nutrition</button>
+ <button data-page="sleep" onclick="go('sleep')">🌙 Sleep & Habits</button>
+ <button data-page="progress" onclick="go('progress')">📈 Progress</button>
+ <button data-page="ai" onclick="go('ai')">🤖 Fitness Assistant</button>
+ <button onclick="exportData()">📥 Export Data</button>
+ </nav>
+</aside>
+
+<main>
+
+<!-- DASHBOARD -->
+<section class="page active" id="home">
+<h1 data-en="Welcome to EASYFIT 👋" data-hi="EASYFIT में आपका स्वागत है 👋">Welcome to EASYFIT 👋</h1>
+<p class="sub" data-en="Build better habits. Get stronger every day." data-hi="बेहतर आदतें बनाएं और हर दिन मजबूत बनें।">Build better habits. Get stronger every day.</p>
+<div class="grid">
+ <div class="card">💧<div class="small">Water today</div><div class="stat" id="dWater">0</div><div class="small">Glasses</div></div>
+ <div class="card">🌙<div class="small">Latest sleep</div><div class="stat" id="dSleep">--</div><div class="small">Hours</div></div>
+ <div class="card">🏋️<div class="small">Workouts</div><div class="stat" id="dWorkout">0</div><div class="small">Sessions started</div></div>
+ <div class="card">🔥<div class="small">Daily habits</div><div class="stat" id="dHabits">0/4</div><div class="small">Completed</div></div>
+</div>
+<div class="two">
+ <div class="card">
+  <h2>Today's Workout</h2>
+  <div id="dashExercises"></div>
+  <button class="btn secondary" onclick="go('workout')">View Workout →</button>
+ </div>
+ <div class="card">
+  <h2>Daily Habits</h2>
+  <div id="dashHabits"></div>
+  <button class="btn secondary" onclick="go('sleep')">Track habits →</button>
+ </div>
+</div>
+<div class="card">
+ <h2>Welcome to your fitness journey</h2>
+ <p class="muted">Consistency matters more than perfection. Train safely, eat balanced meals and give your body time to recover.</p>
+</div>
+</section>
+
+<!-- WORKOUT -->
+<section class="page" id="workout">
+<h1>Workout Planner 💪</h1>
+<p class="sub">Plan, perform and track your exercises.</p>
+<div class="card">
+ <h2>Choose muscle group</h2>
+ <select class="field" id="muscle" onchange="renderWorkout()">
+ <option>Chest</option><option>Back</option><option>Legs</option><option>Shoulders</option><option>Arms</option><option>Core</option><option>Full Body</option>
+ </select>
+ <div class="row"><h2 id="muscleName">Chest</h2><span class="tag" id="exCount">0 Exercises</span></div>
+ <div id="exerciseList"></div>
+ <div class="actions">
+ <button class="btn green" onclick="startWorkout()">▶ Start Workout</button>
+ <button class="btn secondary" onclick="resetWorkout()">Reset checks</button>
+ </div>
+ <p id="workoutMessage" class="small"></p>
+</div>
+<div class="card">
+ <h2>Add your own exercise</h2>
+ <label>Exercise name</label>
+ <input class="field" id="exName" placeholder="e.g. Incline Dumbbell Press">
+ <div class="two">
+ <div><label>Sets</label><input class="field" id="exSets" type="number" min="1" value="3"></div>
+ <div><label>Reps</label><input class="field" id="exReps" type="number" min="1" value="10"></div>
+ </div>
+ <button class="btn" onclick="addExercise()">+ Add Exercise</button>
+</div>
+<div class="card">
+ <h2>Training safety</h2>
+ <p class="muted">Warm up, use controlled technique and choose manageable resistance. Stop if you feel pain or dizziness. Rest between sessions.</p>
+</div>
+</section>
+
+<!-- DIET -->
+<section class="page" id="diet">
+<h1>Nutrition & Diet 🥗</h1>
+<p class="sub">Your daily food and hydration journal.</p>
+<div class="grid">
+ <div class="card">💧<div class="small">Water</div><div class="stat" id="waterValue">0</div><button class="btn small" onclick="water(1)">+ Glass</button> <button class="btn secondary" onclick="water(-1)">−</button></div>
+ <div class="card">🍽️<div class="small">Meals</div><div class="stat" id="mealValue">0</div></div>
+ <div class="card">🥚<div class="small">Protein estimate</div><div class="stat" id="proteinValue">0g</div></div>
+ <div class="card">📅<div class="small">Date</div><div class="stat" id="dateValue" style="font-size:16px">Today</div></div>
+</div>
+<div class="two">
+ <div class="card">
+  <h2>Add a meal</h2>
+  <label>Food name</label>
+  <input class="field" id="foodName" placeholder="Dal, rice, eggs...">
+  <label>Meal type</label>
+  <select class="field" id="mealType"><option>Breakfast</option><option>Lunch</option><option>Snack</option><option>Dinner</option></select>
+  <label>Estimated protein (grams)</label>
+  <input class="field" id="foodProtein" type="number" min="0" value="0">
+  <button class="btn" onclick="addMeal()">+ Add meal</button>
+ </div>
+ <div class="card">
+  <h2>Today's food diary</h2>
+  <div id="mealList"></div>
+ </div>
+</div>
+<div class="card"><h2>Nutrition basics</h2><p class="muted">Eat a variety of vegetables, fruits, grains, protein-rich foods and healthy fats. Individual nutrition needs vary. Avoid extreme diets.</p></div>
+</section>
+
+<!-- SLEEP -->
+<section class="page" id="sleep">
+<h1>Sleep & Wellness 🌙</h1>
+<p class="sub">Recovery is part of fitness.</p>
+<div class="two">
+ <div class="card">
+  <h2>Sleep tracker</h2>
+  <label>Hours slept</label>
+  <input class="field" type="number" id="sleepHours" min="0.5" max="24" step=".5" placeholder="e.g. 8">
+  <label>Sleep quality</label>
+  <select class="field" id="sleepQuality"><option>Good</option><option>Average</option><option>Poor</option></select>
+  <button class="btn" onclick="saveSleep()">Save sleep</button>
+  <h3 style="margin-top:20px">Sleep history</h3>
+  <div id="sleepHistory"></div>
+ </div>
+ <div class="card">
+  <h2>Daily habits</h2>
+  <div id="habitList"></div>
+  <p class="small">Tick when completed.</p>
+ </div>
+</div>
+<div class="card">
+ <h2>Recovery tips</h2>
+ <p class="muted">Keep a regular sleep routine, take rest days when needed, drink water and do gentle mobility work. Do not ignore persistent pain.</p>
+</div>
+</section>
+
+<!-- PROGRESS -->
+<section class="page" id="progress">
+<h1>Your Progress 📈</h1>
+<p class="sub">Keep a record of your achievements.</p>
+<div class="grid">
+ <div class="card">📋<div class="small">Records</div><div class="stat" id="recordCount">0</div></div>
+ <div class="card">🏋️<div class="small">Workouts</div><div class="stat" id="sessionCount">0</div></div>
+ <div class="card">💧<div class="small">Water today</div><div class="stat" id="progressWater">0</div></div>
+ <div class="card">🌙<div class="small">Latest sleep</div><div class="stat" id="progressSleep">--</div></div>
+</div>
+<div class="card">
+ <h2>Add progress record</h2>
+ <label>Body weight (kg) — optional</label>
+ <input class="field" id="weight" type="number" min="0" step=".1" placeholder="e.g. 60">
+ <label>Achievement or notes</label>
+ <textarea class="field" id="notes" placeholder="e.g. Improved exercise technique"></textarea>
+ <button class="btn" onclick="addRecord()">Save progress</button>
+</div>
+<div class="card"><h2>Progress history</h2><div id="recordList"></div></div>
+</section>
+
+<!-- FITNESS ASSISTANT -->
+<section class="page" id="ai">
+<h1>Fitness Assistant 🤖</h1>
+<p class="sub">Ask general fitness questions.</p>
+<div class="card">
+ <span class="tag">OFFLINE DEMO ASSISTANT</span>
+ <div class="chat" id="answer">Hello! Ask me about workouts, exercise technique, sleep or nutrition.</div>
+ <textarea class="field" id="question" placeholder="Ask your fitness question..."></textarea>
+ <button class="btn" onclick="askAI()">Ask question</button>
+ <div class="actions">
+ <button class="btn secondary" onclick="quick('How should I warm up?')">Warm-up</button>
+ <button class="btn secondary" onclick="quick('How can I improve recovery?')">Recovery</button>
+ <button class="btn secondary" onclick="quick('What is progressive overload?')">Progressive overload</button>
+ </div>
+ <p class="small">This is a basic offline demo, not a real AI connection. A real AI assistant needs a secure backend and API.</p>
+</div>
+</section>
+
+</main>
+</div>
+
+<nav class="bottom" id="bottomNav">
+ <button class="active" data-page="home" onclick="go('home')"><span>🏠</span>Home</button>
+ <button data-page="workout" onclick="go('workout')"><span>💪</span>Workout</button>
+ <button data-page="diet" onclick="go('diet')"><span>🥗</span>Diet</button>
+ <button data-page="sleep" onclick="go('sleep')"><span>🌙</span>Sleep</button>
+ <button data-page="progress" onclick="go('progress')"><span>📈</span>Progress</button>
+ <button data-page="ai" onclick="go('ai')"><span>🤖</span>AI</button>
+</nav>
+<footer>EASYFIT © 2026 · Your Fitness Journey</footer>
+</div>
+
+<script>
+"use strict";
+const KEY="easyfit_complete_v7";
+const today=()=>{const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")};
+const defaults={
+ Chest:[["Push-ups",3,10],["Bench Press",3,10],["Incline Dumbbell Press",3,10],["Chest Fly",3,12]],
+ Back:[["Lat Pulldown",3,10],["Seated Cable Row",3,10],["One Arm Dumbbell Row",3,10],["Back Extension",2,12]],
+ Legs:[["Bodyweight Squat",3,12],["Leg Press",3,10],["Leg Curl",3,12],["Calf Raise",3,15]],
+ Shoulders:[["Shoulder Press",3,10],["Lateral Raise",3,12],["Rear Delt Fly",3,12]],
+ Arms:[["Bicep Curl",3,10],["Hammer Curl",3,10],["Triceps Pushdown",3,12]],
+ Core:[["Plank",3,30],["Dead Bug",3,10],["Bird Dog",3,10]],
+ "Full Body":[["Squat",3,10],["Push-ups",3,10],["Dumbbell Row",3,10],["Plank",3,30]]
+};
+const habitNames=["Drink water regularly","Move your body","Eat balanced meals","Keep a regular sleep routine"];
+function fresh(){return {exercises:JSON.parse(JSON.stringify(defaults)),checks:{},water:{},meals:{},sleeps:[],habits:{},records:[],sessions:0,started:{}}}
+let data=fresh(),language="en";
+try{
+ const saved=JSON.parse(localStorage.getItem(KEY));
+ if(saved&&typeof saved==="object")data={...fresh(),...saved};
+}catch(e){}
+if(!data.exercises||typeof data.exercises!=="object")data.exercises=JSON.parse(JSON.stringify(defaults));
+Object.keys(defaults).forEach(k=>{if(!Array.isArray(data.exercises[k]))data.exercises[k]=JSON.parse(JSON.stringify(defaults[k]));});
+function save(){try{localStorage.setItem(KEY,JSON.stringify(data));}catch(e){alert("Storage unavailable. Please export your data.");}}
+function el(id){return document.getElementById(id)}
+function safe(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function t(en,hi){return language==="hi"?hi:en}
+function go(id){
+ document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
+ el(id).classList.add("active");
+ document.querySelectorAll("[data-page]").forEach(x=>x.classList.toggle("active",x.dataset.page===id));
+ window.scrollTo(0,0);
+ renderAll();
+}
+function toggleLanguage(){
+ language=language==="en"?"hi":"en";
+ document.querySelectorAll("[data-en]").forEach(x=>x.textContent=x.dataset[language]||x.dataset.en);
+ el("langButton").textContent=language==="en"?"हिन्दी":"English";
+ renderAll();
+}
+function checks(){return data.checks[today()]||(data.checks[today()]=[])}
+function habits(){return data.habits[today()]||(data.habits[today()]=[])}
+function renderWorkout(){
+ const m=el("muscle").value,list=data.exercises[m]||[],done=checks();
+ el("muscleName").textContent=m;
+ el("exCount").textContent=list.length+" Exercises";
+ el("exerciseList").innerHTML=list.length?list.map((x,i)=>{
+ const id=m+"::"+i,yes=done.includes(id);
+ return `<div class="item ${yes?"done":""}"><input type="checkbox" ${yes?"checked":""} onchange="checkExercise('${m}',${i},this.checked)"><div class="name">${safe(x[0])}<div class="small">${x[1]} sets × ${x[2]} reps</div></div><span class="tag">${yes?"Done":"Planned"}</span></div>`;
+ }).join(""):`<div class="empty">No exercises. Add one below.</div>`;
+ el("workoutMessage").textContent=done.length+" exercises completed today.";
+}
+function checkExercise(m,i,on){
+ const id=m+"::"+i,a=checks();
+ data.checks[today()]=on?[...new Set([...a,id])]:a.filter(x=>x!==id);
+ save();renderAll();
+}
+function addExercise(){
+ const name=el("exName").value.trim(),m=el("muscle").value;
+ const sets=Number(el("exSets").value),reps=Number(el("exReps").value);
+ if(!name||sets<1||reps<1){alert("Enter a name, sets and reps.");return;}
+ data.exercises[m].push([name,sets,reps]);el("exName").value="";
+ save();renderAll();alert("Exercise added!");
+}
+function startWorkout(){
+ if(!data.started[today()]){data.started[today()]=true;data.sessions++;}
+ save();renderAll();alert(t("Workout session started!","वर्कआउट शुरू हो गया!"));
+}
+function resetWorkout(){
+ if(!confirm("Reset today's exercise checks?"))return;
+ data.checks[today()]=[];save();renderAll();
+}
+function water(n){
+ data.water[today()]=Math.max(0,Math.min(30,(data.water[today()]||0)+n));
+ save();renderAll();
+}
+function addMeal(){
+ const name=el("foodName").value.trim(),protein=Math.max(0,Number(el("foodProtein").value)||0);
+ if(!name){alert("Enter food name.");return;}
+ data.meals[today()]=data.meals[today()]||[];
+ data.meals[today()].push({name,type:el("mealType").value,protein});
+ el("foodName").value="";el("foodProtein").value="0";
+ save();renderAll();
+}
+function removeMeal(i){data.meals[today()].splice(i,1);save();renderAll()}
+function saveSleep(){
+ const hours=Number(el("sleepHours").value);
+ if(!hours||hours<.5||hours>24){alert("Enter valid sleep hours.");return;}
+ data.sleeps.unshift({date:today(),hours,quality:el("sleepQuality").value});
+ data.sleeps=data.sleeps.slice(0,60);
+ el("sleepHours").value="";save();renderAll();
+}
+function toggleHabit(i,on){
+ const a=habits();
+ data.habits[today()]=on?[...new Set([...a,i])]:a.filter(x=>x!==i);
+ save();renderAll();
+}
+function addRecord(){
+ const weight=el("weight").value,note=el("notes").value.trim();
+ if(!weight&&!note){alert("Add a weight or note.");return;}
+ data.records.unshift({date:today(),weight:weight?Number(weight):null,note});
+ data.records=data.records.slice(0,200);
+ el("weight").value="";el("notes").value="";save();renderAll();
+}
+function removeRecord(i){data.records.splice(i,1);save();renderAll()}
+function renderDiet(){
+ const meals=data.meals[today()]||[];
+ el("waterValue").textContent=data.water[today()]||0;
+ el("mealValue").textContent=meals.length;
+ el("proteinValue").textContent=meals.reduce((a,x)=>a+x.protein,0)+"g";
+ el("dateValue").textContent=today();
+ el("mealList").innerHTML=meals.length?meals.map((m,i)=>`<div class="item"><div class="name">${safe(m.name)}<div class="small">${safe(m.type)} · ${m.protein}g protein estimate</div></div><button class="btn red" onclick="removeMeal(${i})">×</button></div>`).join(""):'<div class="empty">No meals added yet.</div>';
+}
+function renderHabits(){
+ const a=habits();
+ el("habitList").innerHTML=habitNames.map((h,i)=>`<div class="item ${a.includes(i)?"done":""}"><input type="checkbox" ${a.includes(i)?"checked":""} onchange="toggleHabit(${i},this.checked)"><div class="name">${safe(h)}</div></div>`).join("");
+ el("dashHabits").innerHTML=habitNames.map((h,i)=>`<div class="item"><span>${a.includes(i)?"✅":"○"}</span><div class="name">${safe(h)}</div></div>`).join("");
+}
+function renderSleep(){
+ el("sleepHistory").innerHTML=data.sleeps.length?data.sleeps.slice(0,7).map(s=>`${s.date} · ${s.hours} hours · ${safe(s.quality)}`).join("<br>"):"No sleep records yet.";
+}
+function renderProgress(){
+ el("recordCount").textContent=data.records.length;
+ el("sessionCount").textContent=data.sessions;
+ el("progressWater").textContent=data.water[today()]||0;
+ el("progressSleep").textContent=data.sleeps[0]?data.sleeps[0].hours+"h":"--";
+ el("recordList").innerHTML=data.records.length?data.records.map((r,i)=>`<div class="item"><div class="name">${r.date}<div class="small">${r.weight!==null?"Weight: "+r.weight+" kg · ":""}${safe(r.note)}</div></div><button class="btn red" onclick="removeRecord(${i})">Delete</button></div>`).join(""):'<div class="empty">No records yet.</div>';
+}
+function renderHome(){
+ el("dWater").textCo
